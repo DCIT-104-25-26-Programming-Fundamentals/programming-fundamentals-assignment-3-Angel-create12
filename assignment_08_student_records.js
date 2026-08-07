@@ -80,8 +80,159 @@
 // - Handle invalid menu choices and missing student IDs gracefully.
 //
 
-// =============================================================================
-// YOUR CODE BELOW — remove the // symbols from the scaffold and fill it in
-// =============================================================================
+const readlineSync = require('readline-sync');
 
+// Global array to hold student record objects
+let students = [];
+
+/**
+ * Helper function to calculate the average of an array of scores.
+ * @param {number[]} scores - Array of numbers.
+ * @returns {number} The average score, or 0 if empty.
+ */
+function calculateAverage(scores) {
+  if (scores.length === 0) return 0;
+  let sum = 0;
+  for (let i = 0; i < scores.length; i++) {
+    sum += scores[i];
+  }
+  return sum / scores.length;
+}
+
+/**
+ * Feature 1: Adds a new student record to the students array.
+ */
+function addStudent() {
+  const name = readlineSync.question('Student name: ').trim();
+  if (name === '') {
+    console.log('Error: Student name cannot be empty.');
+    return;
+  }
+
+  const id = readlineSync.questionInt('Student ID: ');
+  
+  // Optional check to see if ID already exists
+  for (let i = 0; i < students.length; i++) {
+    if (students[i].id === id) {
+      console.log('Error: A student with this ID already exists.');
+      return;
+    }
+  }
+
+  const scoreCount = readlineSync.questionInt('How many scores? ');
+  if (scoreCount < 0) {
+    console.log('Error: Score count cannot be negative.');
+    return;
+  }
+
+  const scores = [];
+  for (let i = 1; i <= scoreCount; i++) {
+    const score = readlineSync.questionFloat(`Enter score ${i}: `);
+    scores.push(score);
+  }
+
+  // Create student object and push to array
+  const newStudent = {
+    name: name,
+    id: id,
+    scores: scores
+  };
+
+  students.push(newStudent);
+  console.log(`Student "${name}" added successfully.`);
+}
+
+/**
+ * Feature 2: Displays all student records in a formatted summary.
+ */
+function displayAllStudents() {
+  if (students.length === 0) {
+    console.log('\nNo student records found.');
+    return;
+  }
+
+  console.log('\n================================');
+  console.log('      ALL STUDENT RECORDS       ');
+  console.log('================================');
+
+  for (let i = 0; i < students.length; i++) {
+    const s = students[i];
+    const avg = calculateAverage(s.scores);
+    console.log(`${i + 1}. Name: ${s.name} | ID: ${s.id} | Scores: [${s.scores.join(', ')}] | Average: ${avg.toFixed(2)}`);
+  }
+}
+
+/**
+ * Feature 3: Finds a student by ID and prints their average score.
+ */
+function calculateStudentAverage() {
+  if (students.length === 0) {
+    console.log('\nNo student records available.');
+    return;
+  }
+
+  const searchId = readlineSync.questionInt('Enter student ID: ');
+  let foundStudent = null;
+
+  for (let i = 0; i < students.length; i++) {
+    if (students[i].id === searchId) {
+      foundStudent = students[i];
+      break;
+    }
+  }
+
+  if (foundStudent === null) {
+    console.log(`Error: Student with ID ${searchId} not found.`);
+  } else {
+    const avg = calculateAverage(foundStudent.scores);
+    console.log(`${foundStudent.name}'s average score: ${avg.toFixed(2)}`);
+  }
+}
+
+/**
+ * Displays the main application menu.
+ */
+function displayMenu() {
+  console.log('\n================================');
+  console.log('   STUDENT RECORD SYSTEM MENU   ');
+  console.log('================================');
+  console.log('1. Add student');
+  console.log('2. Display all students');
+  console.log('3. Calculate average score');
+  console.log('4. Quit');
+}
+
+/**
+ * Main application loop handling user choices.
+ */
+function main() {
+  let running = true;
+
+  while (running) {
+    displayMenu();
+    const choice = readlineSync.questionInt('Enter your choice (1-4): ');
+
+    switch (choice) {
+      case 1:
+        addStudent();
+        break;
+      case 2:
+        displayAllStudents();
+        break;
+      case 3:
+        calculateStudentAverage();
+        break;
+      case 4:
+        console.log('Goodbye!');
+        running = false;
+        break;
+      default:
+        console.log('Invalid choice! Please enter a number between 1 and 4.');
+        break;
+    }
+  }
+}
+
+// Run the application
+main();
 

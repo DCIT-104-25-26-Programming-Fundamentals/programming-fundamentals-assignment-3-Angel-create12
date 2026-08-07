@@ -55,8 +55,69 @@
 // - Complete Part A before attempting Part B.
 
 //
-// =============================================================================
-// YOUR CODE BELOW — remove the // symbols from the scaffold and fill it in
-// =============================================================================
+const readlineSync = require('readline-sync');
 
+/**
+ * Helper function to print a multiplication table for a single number from 1 to 12.
+ * 
+ * @param {number} num - The number to generate the table for.
+ */
+function printSingleTable(num) {
+  console.log(`\nMultiplication Table for ${num}:`);
+  for (let i = 1; i <= 12; i++) {
+    console.log(`${num}  x  ${i < 10 ? i + ' ' : i} =  ${num * i}`);
+  }
+}
+
+/**
+ * PART A — Asks for a single number and prints its multiplication table from 1 to 12.
+ * 
+ * @param {number} num - The target number.
+ */
+function generateSingleTable(num) {
+  if (num <= 0) {
+    console.log('Error: Please enter a positive integer greater than 0.');
+    return;
+  }
+  printSingleTable(num);
+}
+
+/**
+ * PART B — Asks for N and prints multiplication tables for all numbers from 1 to N.
+ * 
+ * @param {number} n - The maximum table limit.
+ */
+function generateTablesUpToN(n) {
+  if (n <= 0) {
+    console.log('Error: Please enter a positive integer greater than 0.');
+    return;
+  }
+
+  for (let currentNum = 1; currentNum <= n; currentNum++) {
+    printSingleTable(currentNum);
+    if (currentNum < n) {
+      console.log('---------------------------');
+    }
+  }
+}
+
+/**
+ * Main execution function to orchestrate input and output.
+ */
+function main() {
+  console.log('====================================');
+  console.log('     PART A — Single Table          ');
+  console.log('====================================');
+  const singleNum = readlineSync.questionInt('Enter a number for a single table: ');
+  generateSingleTable(singleNum);
+
+  console.log('\n====================================');
+  console.log('   PART B — Tables from 1 to N     ');
+  console.log('====================================');
+  const limitN = readlineSync.questionInt('Enter N to generate all tables from 1 to N: ');
+  generateTablesUpToN(limitN);
+}
+
+// Run the main program
+main();
 

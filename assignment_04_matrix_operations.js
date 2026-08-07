@@ -64,9 +64,141 @@
 // - Tip: Complete Part A first, then Parts B and C.
 //
 
-// =============================================================================
-// YOUR CODE BELOW — remove the // symbols from the scaffold and fill it in
-// =============================================================================
-
 const readlineSync = require('readline-sync');
+
+/**
+ * Helper function to read an M x N matrix from user input.
+ * Users type space-separated numbers for each row.
+ */
+function readMatrix(rows, cols, name = 'Matrix') {
+  console.log(`\nEnter values for ${name} (${rows}x${cols}):`);
+  const matrix = [];
+  for (let i = 0; i < rows; i++) {
+    const input = readlineSync.question(`Enter row ${i + 1}: `);
+    const row = input.trim().split(/\s+/).map(Number);
+    
+    // Simple validation if column count doesn't match
+    if (row.length !== cols) {
+      console.log(`Warning: Expected ${cols} numbers, but got ${row.length}. Please re-enter this row.`);
+      i--; // Retry this row
+      continue;
+    }
+    matrix.push(row);
+  }
+  return matrix;
+}
+
+/**
+ * Displays a matrix formatted cleanly in grid form.
+ */
+function printMatrix(matrix) {
+  for (let i = 0; i < matrix.length; i++) {
+    console.log(matrix[i].join('\t'));
+  }
+}
+
+/**
+ * PART A — Transpose a Matrix (M x N -> N x M)
+ */
+function transposeMatrix(matrix) {
+  const rows = matrix.length;
+  const cols = matrix[0].length;
+  const result = [];
+
+  for (let j = 0; j < cols; j++) {
+    const newRow = [];
+    for (let i = 0; i < rows; i++) {
+      newRow.push(matrix[i][j]);
+    }
+    result.push(newRow);
+  }
+
+  return result;
+}
+
+/**
+ * PART B — Add Two Matrices (M x N + M x N)
+ */
+function addMatrices(matrixA, matrixB) {
+  const rows = matrixA.length;
+  const cols = matrixA[0].length;
+  const result = [];
+
+  for (let i = 0; i < rows; i++) {
+    const row = [];
+    for (let j = 0; j < cols; j++) {
+      row.push(matrixA[i][j] + matrixB[i][j]);
+    }
+    result.push(row);
+  }
+
+  return result;
+}
+
+/**
+ * PART C — Multiply Two Matrices (M x N * N x P -> M x P)
+ */
+function multiplyMatrices(matrixA, matrixB) {
+  const rowsA = matrixA.length;
+  const colsA = matrixA[0].length;
+  const colsB = matrixB[0].length;
+  const result = [];
+
+  for (let i = 0; i < rowsA; i++) {
+    const row = [];
+    for (let j = 0; j < colsB; j++) {
+      let sum = 0;
+      for (let k = 0; k < colsA; k++) {
+        sum += matrixA[i][k] * matrixB[k][j];
+      }
+      row.push(sum);
+    }
+    result.push(row);
+  }
+
+  return result;
+}
+
+/**
+ * Main function orchestrating user interaction for Parts A, B, and C.
+ */
+function main() {
+  console.log('====================================');
+  console.log('     PART A — TRANSPOSE MATRIX      ');
+  console.log('====================================');
+  const rowsA = readlineSync.questionInt('Enter number of rows for Matrix A: ');
+  const colsA = readlineSync.questionInt('Enter number of columns for Matrix A: ');
+  const matrixA = readMatrix(rowsA, colsA, 'Matrix A');
+
+  console.log('\nOriginal Matrix A:');
+  printMatrix(matrixA);
+
+  const transposed = transposeMatrix(matrixA);
+  console.log('\nTransposed Matrix A:');
+  printMatrix(transposed);
+
+  console.log('\n====================================');
+  console.log('      PART B — ADD MATRICES         ');
+  console.log('====================================');
+  console.log(`Entering Matrix B (must be ${rowsA}x${colsA} to add to Matrix A)...`);
+  const matrixB = readMatrix(rowsA, colsA, 'Matrix B');
+
+  const sumMatrix = addMatrices(matrixA, matrixB);
+  console.log('\nResult of Matrix A + Matrix B:');
+  printMatrix(sumMatrix);
+
+  console.log('\n====================================');
+  console.log('    PART C — MULTIPLY MATRICES      ');
+  console.log('====================================');
+  console.log(`Matrix A is ${rowsA}x${colsA}. Matrix C must have ${colsA} rows.`);
+  const colsC = readlineSync.questionInt('Enter number of columns for Matrix C: ');
+  const matrixC = readMatrix(colsA, colsC, 'Matrix C');
+
+  const productMatrix = multiplyMatrices(matrixA, matrixC);
+  console.log('\nResult of Matrix A x Matrix C:');
+  printMatrix(productMatrix);
+}
+
+// Execute program
+main();
 
